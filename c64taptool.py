@@ -106,6 +106,9 @@ class Tap:
         self.videoStr = _decodeOptions(["PAL", "NTSC"], self.video)
         self.res = br.getUint8()
         self.length = br.getUint32()        
+        if self.length != br.bytesLeft():
+            raise Exception("Header length mismatch: %d not equal to actual bytes in file: %d" % (
+                             self.length, br.bytesLeft()))
         self.pulses = []
         while br.bytesLeft() > 0:
             pl = br.getUint8()
@@ -223,7 +226,7 @@ def readTap(filename):
         raise Exception("Unexpected file signature")
     if tap.version != 1:
         raise Exception("Only TAP version 1 is supported")
-
+    
     print("  Estimated duration: %0.2f sec" % tap.estimateDuration())
     return tap
 
@@ -319,13 +322,11 @@ def main(args):
     try:
         if len(args) == 0:
             raise ShowHelpException
-        params = Params.parse(args)
+        processParams(Params.parse(args))
     except ShowHelpException as e:
         usage()
     except Exception as e:
         print(str(e))
-    else:
-        processParams(params)
 
 if __name__ == "__main__":
     import sys
