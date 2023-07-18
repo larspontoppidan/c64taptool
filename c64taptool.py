@@ -8,7 +8,7 @@ A tool for analysis and processing of C64 TAP Files
 This script needs Python v3 and has no dependencies
 """
 
-SCRIPT_VERSION = "v1.0.0"
+SCRIPT_VERSION = "v1.0.1"
 GITHUB = "https://github.com/larspontoppidan/c64taptool"
 
 class BytesReader():
