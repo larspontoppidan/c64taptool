@@ -251,47 +251,47 @@ Usage:
     c64taptool OPTION [OPTION] ...
           
 Options:
-    -h             Show this help
-    -r FILE        Read FILE as input (required)
-    -p             Print pulse length analysis and histogram
-    -cs START      Crop starting pulses. Pulses before index START are removed
-    -ce END        Crop ending pulses. Pulses after, including index END are removed
-    -a FILE        Append pulses from FILE
-    -s RATIO       Scale pulse lengths, eg. -s 0.9 would make all pulses 90% length
-    -w FILE        Write result to FILE
+    -h                  Show this help
+    -i FILE             Read TAP file and use as input (required)
+    --hist              Print pulse length analysis and histogram
+    --crop-start START  Remove pulses before index START
+    --crop-end END      Remove pulses after index END (including)
+    --append FILE       Append pulses from TAP file
+    --scale RATIO       Scale pulse lengths, eg. -s 0.9 would make all pulses 90% length
+    -o FILE             Write result (output) to TAP file
 """)
 
 def processParams(params:'Params'):
-    if params.Strings["-r"] is None:
-        print("-r option is required")
+    if params.Strings["-i"] is None:
+        print("-i option is required")
     else:
-        tap = readTap(params.Strings["-r"])
-        if params.Flags["-p"] == True:
+        tap = readTap(params.Strings["-i"])
+        if params.Flags["--hist"] == True:
             tap.printPulseHistogram()
-        if params.Ints["-cs"] != 0 or params.Ints["-ce"] != -1:
-            start, end = params.Ints["-cs"], params.Ints["-ce"]
+        if params.Ints["--crop-start"] != 0 or params.Ints["--crop-end"] != -1:
+            start, end = params.Ints["--crop-start"], params.Ints["--crop-end"]
             print("Cropping pulses to interval [%d, %d]" % (start, end))
             tap.crop(start, end)
-        if params.Strings["-a"] is not None:
-            append_tap = readTap(params.Strings["-a"])
+        if params.Strings["--append"] is not None:
+            append_tap = readTap(params.Strings["--append"])
             print("Appending pulses")
             tap.append(append_tap)
-        if params.Floats["-s"] is not None:
-            ratio = params.Floats["-s"]
+        if params.Floats["--scale"] is not None:
+            ratio = params.Floats["--scale"]
             print("Scaling pulses with ratio: %f" % ratio)
             tap.scale(ratio)
-        if params.Strings["-w"] is not None:
-            writeTap(tap, params.Strings["-w"])
+        if params.Strings["-o"] is not None:
+            writeTap(tap, params.Strings["-o"])
 
 class ShowHelpException(Exception):
     pass
 
 class Params:
     def __init__(self):
-        self.Flags = {"-p":False}
-        self.Ints = {"-cs":0, "-ce":-1}
-        self.Strings = {"-r":None, "-a":None, "-w":None}
-        self.Floats = {"-s":None}
+        self.Flags = {"--hist":False}
+        self.Ints = {"--crop-start":0, "--crop-end":-1}
+        self.Strings = {"-i":None, "--append":None, "-o":None}
+        self.Floats = {"--scale":None}
 
     @staticmethod
     def parse(cmds:list):
