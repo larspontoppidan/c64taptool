@@ -2,7 +2,7 @@
 
 A simple Python script for modifying and analysing C64 TAP tape files.
 
-"""text
+```text
 Usage:
     c64taptool OPTION [OPTION] ...
           
@@ -15,4 +15,4 @@ Options:
     -a FILE        Append pulses from FILE
     -s RATIO       Scale pulse lengths, eg. -s 0.9 would make all pulses 90% length
     -w FILE        Write result to FILE
-"""
+```
